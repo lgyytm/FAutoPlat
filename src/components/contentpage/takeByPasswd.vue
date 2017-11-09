@@ -1,6 +1,6 @@
 <template>
     <div class="contentbody" id="contentbody">
-        <mu-toast v-if="toastAlert" :message="toastMassage" @close="hideToastAlert" />
+        <!-- <mu-toast v-if="toastAlert" :message="toastMassage" @close="hideToastAlert" /> -->
         <mu-row :gutter="false">
             <mu-col width="100" tablet="10" desktop="10"></mu-col>
             <mu-col width="100" tablet="80" desktop="80">
@@ -230,10 +230,11 @@ export default {
             this.activeStep = 3;
         },
         showToastAlert(msg) {
-            this.toastMassage = msg;
-            this.toastAlert = true;
-            if (this.toastTimer) clearTimeout(this.toastTimer);
-            this.toastTimer = setTimeout(() => { this.toastAlert = false; this.toastMassage = '' }, 3000);
+            this.$Message.success(msg)
+            // this.toastMassage = msg;
+            // this.toastAlert = true;
+            // if (this.toastTimer) clearTimeout(this.toastTimer);
+            // this.toastTimer = setTimeout(() => { this.toastAlert = false; this.toastMassage = '' }, 3000);
         },
 
         hideToastAlert() {

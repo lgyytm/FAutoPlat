@@ -12,6 +12,7 @@ import config from './common/config';
 // import iview from 'iview';
 
 import 'iview/dist/styles/iview.css';
+import Message from 'iview/src/components/message';
 
 
 Vue.use(MuseUI);
@@ -21,6 +22,7 @@ Vue.use(MuseUI);
 axios.defaults.baseURL = config.backUrl;
 axios.defaults.withCredentials = true;
 Vue.prototype.$axios = axios;
+Vue.prototype.$Message = Message;
 // Vue.use(configuration);
 
 new Vue({

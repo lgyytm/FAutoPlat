@@ -6,11 +6,10 @@
                 <!--  -->
                 <a href="https://sadworld.taobao.com/" target="_blank" title="欢迎光临我的淘宝店" slot="left"><img src="../assets/logo.jpg" slot="left"></a>
                 <!-- <mu-icon-button icon='shopping_cart' tooltip="欢迎光临我的淘宝店" href="https://sadworld.taobao.com/" slot="left" /> -->
-                
                 <tools slot="left"></tools>
                 <mu-raised-button slot="right" class="selectGameBtn" label="选择其他游戏" ref="button" labelPosition="before" icon="expand_more" @click.native="toggle" />
                 <mu-popover :trigger="trigger" :open="open" @close="handleClose">
-                    <mu-menu>
+                    <mu-menu :autoWidth="false">
                         <mu-sub-header>自动发货游戏</mu-sub-header>
                         <mu-menu-item v-for="item in list" :title="item.label" :key="item.value" v-if="item.type === 'auto'"  :to="'/tbpgames/' + item.value" @click.native="handleItemClick"> 
                             <img :src="`/static/img/gameicon/${item.value}.jpg`" slot="after">
