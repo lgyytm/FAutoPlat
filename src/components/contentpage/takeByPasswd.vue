@@ -214,7 +214,7 @@ export default {
             }
             else {
                 //pop alert msg
-                this.showToastAlert('没有找到符合您要求的结果 TλT~', false);
+                this.showToastAlert('没有找到符合您要求的结果 TλT~', 'error');
             }
         },
         choiceOne(item) {
@@ -229,8 +229,10 @@ export default {
             this.showToastAlert('提货成功！');
             this.activeStep = 3;
         },
-        showToastAlert(msg, flag = true) {
-            if(flag) this.$Message.success(msg)
+        showToastAlert(msg, flag = 'success') {
+            if(flag == 'success') this.$Message.success(msg)
+            else if(flag == 'warning') this.$Message.warning(msg)
+            else if(flag == 'info') this.$Message.info(msg)
             else this.$Message.error(msg)
             // this.toastMassage = msg;
             // this.toastAlert = true;

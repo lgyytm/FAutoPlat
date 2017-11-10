@@ -120,8 +120,12 @@
             </mu-content-block>
         <!-- </transition> -->
         <div class="searchFilterControlArea">
-            <mu-flat-button v-show="showSearchFilter" :label="$t('collapselabel')" icon="expand_less" class="demo-flat-button" @click="showSearchFilter = !showSearchFilter" secondary/>
-            <mu-flat-button v-show="!showSearchFilter" :label="$t('expandlabel')" icon="expand_more" class="demo-flat-button" @click="showSearchFilter = !showSearchFilter" secondary/>
+            <mu-flat-button v-show="showSearchFilter" :label="$t('collapselabel')" class="demo-flat-button" @click="showSearchFilter = !showSearchFilter" secondary>
+                <img :src="chevronUp" />
+            </mu-flat-button>
+            <mu-flat-button v-show="!showSearchFilter" :label="$t('expandlabel')" class="demo-flat-button" @click="showSearchFilter = !showSearchFilter" secondary>
+                <img :src="chevronDown" />
+            </mu-flat-button>
         </div>
         
          <!-- 价格条件设定区域 单独展示 -->
@@ -232,8 +236,12 @@
             </div>
         </div>
         <div class="submitFind">
-            <mu-raised-button class="submitButton" :label="$t('searchbtn')" icon="search" labelPosition="before" secondary @click.native="handleSearch(null)" :disabled="disabledButton"></mu-raised-button>
-            <mu-raised-button class="submitButton" :label="$t('resetbtn')" icon="replay" labelPosition="before" primary @click.native="reset"></mu-raised-button>
+            <mu-raised-button class="submitButton" :label="$t('searchbtn')" labelPosition="before" secondary @click.native="handleSearch(null)" :disabled="disabledButton">
+                <img :src="magnify">
+            </mu-raised-button>
+            <mu-raised-button class="submitButton" :label="$t('resetbtn')" labelPosition="before" primary @click.native="reset">
+                <img :src="replay">
+            </mu-raised-button>
         </div>
         <div v-if="showAlert">
             <mu-content-block>
@@ -259,6 +267,11 @@ import InputNumber from 'iview/src/components/input-number';
 import Poptip from 'iview/src/components/poptip';
 import Spin from 'iview/src/components/spin';
 import Collapse from 'iview/src/components/collapse';
+import magnify from 'Svg/magnify.svg';
+import replay from 'Svg/replay.svg';
+import chevronDown from 'Svg/chevron-down.svg';
+import chevronUp from 'Svg/chevron-up.svg';
+
 const Panel = Collapse.Panel;
 
 export default {
@@ -350,7 +363,11 @@ export default {
             finishGetData: '',
             finishGetFirstChoiceGroup: '',
             finishGetRateIgnore: '',
-            finishGetNoticeCollapse:''
+            finishGetNoticeCollapse:'',
+            replay,
+            magnify,
+            chevronDown,
+            chevronUp
             
         }
     },

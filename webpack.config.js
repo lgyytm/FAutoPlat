@@ -1,15 +1,19 @@
 var path = require('path')
 var webpack = require('webpack')
-//var HtmlWebpackPlugin = require('html-webpack-plugin');
+var HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-  entry: ["babel-polyfill","./src/main.js"],
+  entry: ["babel-polyfill", "./src/main.js"],
   output: {
     path: path.resolve(__dirname, './dist'),
     publicPath: '/dist/',
     filename: 'build.js' //'[name].[hash:5].js'//'build.js' //
   },
-//  plugins:[new HtmlWebpackPlugin()],
+  plugins: [
+    new HtmlWebpackPlugin({  // Also generate a test.html
+      template: './index.html'
+    }),
+  ],
   module: {
     rules: [
       {
@@ -22,7 +26,8 @@ module.exports = {
           // other vue-loader options go here
         }
       },
-      { test: /iview.src.*?js$/,
+      {
+        test: /iview.src.*?js$/,
         loader: 'babel-loader'
       },
       {
@@ -31,11 +36,11 @@ module.exports = {
         exclude: /node_modules/
       },
       {
-          test: /\.css$/,
-          loader: "style-loader!css-loader"
+        test: /\.css$/,
+        loader: "style-loader!css-loader"
       },
       {
-        test: /\.(eot|svg|ttf|woff|woff2)(\?\S*)?$/,
+        test: /\.(eot|ttf|woff|woff2)(\?\S*)?$/,
         loader: 'file-loader'
       },
       {
@@ -49,23 +54,27 @@ module.exports = {
   },
   resolve: {
     alias: {
-      'vue$': 'vue/dist/vue.esm.js'
+      'vue$': 'vue/dist/vue.esm.js',
+      'Svg': path.resolve(__dirname, './static/img/svg'),
     }
   },
   devServer: {
     historyApiFallback: true,
-    noInfo: true
+    noInfo: false
   },
   performance: {
     hints: false
   },
-  devtool: false//'#eval-source-map'
+  devtool: 'inline-source-map'
 }
 
 if (process.env.NODE_ENV === 'production') {
   module.exports.devtool = '#source-map'
   // http://vue-loader.vuejs.org/en/workflow/production.html
   module.exports.plugins = (module.exports.plugins || []).concat([
+    new HtmlWebpackPlugin({  // Also generate a test.html
+      template: './index.html'
+    }),
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: '"production"'

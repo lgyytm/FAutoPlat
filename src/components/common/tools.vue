@@ -1,6 +1,9 @@
 ﻿<template>
     <div>
-        <mu-icon-button tooltip="附加功能" @click.native="openBottomSheet" icon="toys"/>
+        
+        <mu-icon-button tooltip="附加功能" @click.native="openBottomSheet">
+            <img :src="fan" />
+        </mu-icon-button>
         <mu-bottom-sheet :open="bottomSheet" @close="closeBottomSheet">
             <mu-list @itemClick="closeBottomSheet">
                 <mu-sub-header>
@@ -16,7 +19,8 @@
         <mu-dialog :open="searchSoldCompDialog" title="查询历史提货信息" >
             <mu-paper :zDepth="1" class="SSCDialogContent" v-if="SSCStatus===0">
                 <mu-content-block class="alertContent">请输入一条您使用过的提货码，然后点击查询</mu-content-block>
-                <mu-text-field class="textArea" :errorText="errorText" label="提货码" labelFloat v-model="deliveryCode" icon="search"></mu-text-field>
+                <img class="imgIcon" :src="magnify">
+                <mu-text-field class="textArea" :errorText="errorText" label="提货码" labelFloat v-model="deliveryCode"></mu-text-field>
             </mu-paper>
             <mu-paper :zDepth="1" v-if="SSCStatus===1">
                 <mu-sub-header class="SSCResultHeader"><b>查询结果</b></mu-sub-header>
@@ -79,7 +83,9 @@
         <mu-dialog :open="searchCompByIdDialog" title="根据ID查询账号" >
             <mu-paper :zDepth="1" class="SSCDialogContent">
                 <mu-content-block class="alertContent">请输入ID，然后点击查询</mu-content-block>
-                <mu-text-field class="textArea" :errorText="errorTextinSearchId" label="账号ID" labelFloat v-model.trim="compId" icon="search"></mu-text-field>
+                <img class="imgIcon" :src="magnify">
+               <mu-text-field class="textArea" :errorText="errorTextinSearchId" label="账号ID" labelFloat v-model.trim="compId">
+                </mu-text-field>
             </mu-paper>
             
             </mu-paper>
@@ -90,208 +96,217 @@
 </template>
 
 <script>
-import bus from '../../common/bus'
-import Clipboard from 'clipboard';
+import bus from "../../common/bus";
+import Clipboard from "clipboard";
+import Fan from "Svg/fan.svg";
+import magnify from "Svg/magnify2.svg";
 
 export default {
-    data() {
-        return {
-            GetPateConfigUrl: '/pageconfig/get',
-            endTutorialHtml: '',
-            dcodeHistoryGetUrl: '/soldlog/bydcode/get',
-            bottomSheet: false,
-            searchSoldCompDialog: false,
-            searchCompByIdDialog: false,
-            compId: '',
-            errorText: '',
-            errorTextinSearchId: '',
-            deliveryCode: '',
-            SSCStatus: 0, //查询历史信息状态，0为待查询，1为已查询
-            soldCompInfo: {},
-            searchBtnDisabled: false //查询按钮是否禁用
-        }
+  data() {
+    return {
+      GetPateConfigUrl: "/pageconfig/get",
+      endTutorialHtml: "",
+      dcodeHistoryGetUrl: "/soldlog/bydcode/get",
+      bottomSheet: false,
+      searchSoldCompDialog: false,
+      searchCompByIdDialog: false,
+      compId: "",
+      errorText: "",
+      errorTextinSearchId: "",
+      deliveryCode: "",
+      SSCStatus: 0, //查询历史信息状态，0为待查询，1为已查询
+      soldCompInfo: {},
+      searchBtnDisabled: false, //查询按钮是否禁用
+      fan: Fan,
+      magnify
+    };
+  },
+  created() {
+    bus.$on("searchHistory", () => {
+      this.showSearchSoldComp();
+    });
+  },
+  watch: {
+    deliveryCode: function(val) {
+      if (val === "") {
+        this.errorText = "";
+      }
     },
-    created() {
-        bus.$on('searchHistory', () => {
-            this.showSearchSoldComp();
-        })
-    },
-    watch: {
-        deliveryCode: function(val) {
-            if (val === "") {
-                this.errorText = ""
-            }
-        },
-        searchBtnDisabled(val) {
-            if (val) {
-                setTimeout(() => {
-                    this.searchBtnDisabled = false;
-                }, 1000);
-            }
-        }
-    },
-    methods: {
-        getPageConfig(game) {
-            if(!game) {
-                console.log("game not exist");
-                return;
-            } 
-            let self = this;
-            this.$axios.get(this.GetPateConfigUrl, {
-                params: {
-                    game: game
-                }
-            }).then((res) => {
-                if (res.data.code === "1") {
-                    //获取配置成功
-                    this.endTutorialHtml = res.data.data.end_tutorial;
-
-                }
-            })
-        },
-        closeBottomSheet() {
-            this.bottomSheet = false
-        },
-        openBottomSheet() {
-            this.bottomSheet = true
-        },
-        closeSSCDialog() {
-            this.searchSoldCompDialog = false;
-            this.deliveryCode = '';
-            this.SSCStatus = 0;
-            this.soldCompInfo = {};
-        },
-        testFunc() {
-            console.log("ok")
-        },
-        testFuncPre() {
-            bus.$emit('endPre');
-        },
-        handleSearchById() {
-            let inputId = this.compId.replace(/\s/g, "").replace(/[^a-zA-Z\d]+/g, "");
-            // console.log(inputId);
-            if (inputId.length % 24 !== 0 || inputId.length === 0) {
-                this.errorTextinSearchId = "您输入的ID不正确，请重新输入";
-            } else {
-                this.errorTextinSearchId = "";
-                bus.$emit('searchById', inputId);
-                this.searchCompByIdDialog = false;
-            }
-            
-        },
-        showSearchSoldComp() {
-            this.searchSoldCompDialog = true;
-        },
-        searchSoldComp() {
-            this.searchBtnDisabled = true;
-            let deliveryCode = this.deliveryCode.replace(/\s/g, "");
-            if (deliveryCode.length !== 32) {
-                this.errorText = "您输入的提货码不正确，请重新输入，只能输一条哦";
-            } else {
-                //let data = {DC: this.deliveryCode};
-                let self = this;
-                this.$axios.get(this.dcodeHistoryGetUrl, {
-                    params: {
-                        dcode: deliveryCode
-                    }
-                }).then(function(res) {
-                    if (res.data.code === "1") {
-                        self.soldCompInfo = res.data.data;
-                        self.SSCStatus = 1;
-                        self.getPageConfig(res.data.data.game);
-                    } else {
-                        self.errorText = "未查询到您的提货码的提货记录"
-                    }
-                })
-            }
-        },
-        searchContinue() {
-            this.deliveryCode = '';
-            this.SSCStatus = 0;
-        },
-        // openEndShow() {
-        //     bus.$emit('endPre');
-        // },
-        // copyContent(id) {
-        //     // 创建元素用于复制
-        //     var aux = document.createElement("input");
-
-        //     // 获取复制内容
-        //     var content = document.getElementById(id).innerHTML.trim();
-
-        //     // 设置元素内容
-        //     aux.setAttribute("value", content);
-
-        //     // 将元素插入页面进行调用
-        //     document.body.appendChild(aux);
-
-        //     // 复制内容
-        //     aux.select();
-
-        //     // 将内容复制到剪贴板
-        //     let tag = document.execCommand("copy");
-
-        //     // 删除创建元素
-        //     document.body.removeChild(aux);
-
-        //     if (tag) {
-        //         //复制成功
-        //         alert('复制成功');
-        //     }
-        // }
-        copyContent(id) {
-            var clipboard = new Clipboard('.copybtn' + id, {
-                // target: function() {
-                //     return document.getElementById(id);
-                // },
-                text: function(trigger) {
-                    return document.getElementById(id).innerText.trim();
-                }
-            });
-            clipboard.on('success', function(e) {
-                // console.info('Action:', e.action);
-                // console.info('Text:', e.text);
-                // console.info('Trigger:', e.trigger);
-                e.clearSelection();
-                alert('复制成功');
-                clipboard.destroy();
-            });
-
-            clipboard.on('error', function(e) {
-                // console.error('Action:', e.action);
-                // console.error('Trigger:', e.trigger);
-            });
-        }
+    searchBtnDisabled(val) {
+      if (val) {
+        setTimeout(() => {
+          this.searchBtnDisabled = false;
+        }, 1000);
+      }
     }
-}
+  },
+  methods: {
+    getPageConfig(game) {
+      if (!game) {
+        console.log("game not exist");
+        return;
+      }
+      let self = this;
+      this.$axios
+        .get(this.GetPateConfigUrl, {
+          params: {
+            game: game
+          }
+        })
+        .then(res => {
+          if (res.data.code === "1") {
+            //获取配置成功
+            this.endTutorialHtml = res.data.data.end_tutorial;
+          }
+        });
+    },
+    closeBottomSheet() {
+      this.bottomSheet = false;
+    },
+    openBottomSheet() {
+      this.bottomSheet = true;
+    },
+    closeSSCDialog() {
+      this.searchSoldCompDialog = false;
+      this.deliveryCode = "";
+      this.SSCStatus = 0;
+      this.soldCompInfo = {};
+    },
+    testFunc() {
+      console.log("ok");
+    },
+    testFuncPre() {
+      bus.$emit("endPre");
+    },
+    handleSearchById() {
+      let inputId = this.compId.replace(/\s/g, "").replace(/[^a-zA-Z\d]+/g, "");
+      // console.log(inputId);
+      if (inputId.length % 24 !== 0 || inputId.length === 0) {
+        this.errorTextinSearchId = "您输入的ID不正确，请重新输入";
+      } else {
+        this.errorTextinSearchId = "";
+        bus.$emit("searchById", inputId);
+        this.searchCompByIdDialog = false;
+      }
+    },
+    showSearchSoldComp() {
+      this.searchSoldCompDialog = true;
+    },
+    searchSoldComp() {
+      this.searchBtnDisabled = true;
+      let deliveryCode = this.deliveryCode.replace(/\s/g, "");
+      if (deliveryCode.length !== 32) {
+        this.errorText = "您输入的提货码不正确，请重新输入，只能输一条哦";
+      } else {
+        //let data = {DC: this.deliveryCode};
+        let self = this;
+        this.$axios
+          .get(this.dcodeHistoryGetUrl, {
+            params: {
+              dcode: deliveryCode
+            }
+          })
+          .then(function(res) {
+            if (res.data.code === "1") {
+              self.soldCompInfo = res.data.data;
+              self.SSCStatus = 1;
+              self.getPageConfig(res.data.data.game);
+            } else {
+              self.errorText = "未查询到您的提货码的提货记录";
+            }
+          });
+      }
+    },
+    searchContinue() {
+      this.deliveryCode = "";
+      this.SSCStatus = 0;
+    },
+    // openEndShow() {
+    //     bus.$emit('endPre');
+    // },
+    // copyContent(id) {
+    //     // 创建元素用于复制
+    //     var aux = document.createElement("input");
+
+    //     // 获取复制内容
+    //     var content = document.getElementById(id).innerHTML.trim();
+
+    //     // 设置元素内容
+    //     aux.setAttribute("value", content);
+
+    //     // 将元素插入页面进行调用
+    //     document.body.appendChild(aux);
+
+    //     // 复制内容
+    //     aux.select();
+
+    //     // 将内容复制到剪贴板
+    //     let tag = document.execCommand("copy");
+
+    //     // 删除创建元素
+    //     document.body.removeChild(aux);
+
+    //     if (tag) {
+    //         //复制成功
+    //         alert('复制成功');
+    //     }
+    // }
+    copyContent(id) {
+      var clipboard = new Clipboard(".copybtn" + id, {
+        // target: function() {
+        //     return document.getElementById(id);
+        // },
+        text: function(trigger) {
+          return document.getElementById(id).innerText.trim();
+        }
+      });
+      clipboard.on("success", function(e) {
+        // console.info('Action:', e.action);
+        // console.info('Text:', e.text);
+        // console.info('Trigger:', e.trigger);
+        e.clearSelection();
+        alert("复制成功");
+        clipboard.destroy();
+      });
+
+      clipboard.on("error", function(e) {
+        // console.error('Action:', e.action);
+        // console.error('Trigger:', e.trigger);
+      });
+    }
+  }
+};
 </script>
 
 <style scoped>
-    .col1{
-        width: 120px;
-    }
-    .SSCDialogContent{
-        padding:10px;
-    }
-    .SSCResultHeader{
-        text-align:center;
-    }
-    .SSCCol2{
-        font-family:"Source Code Pro";
-        /* letter-spacing: 2px; */
-        font-size: 1em;
-    }
-    .fontTip {
-        font-size: 1.0em;
-        color: red;
-    }
-    .textArea{
-        width: 300px;
-    }
-    .userHelp{
-        min-height: 260px;
-        overflow: auto;
-        word-wrap: break-word;
-        word-break: break-all;
-    }
+.col1 {
+  width: 120px;
+}
+.SSCDialogContent {
+  padding: 10px;
+}
+.SSCResultHeader {
+  text-align: center;
+}
+.SSCCol2 {
+  font-family: "Source Code Pro";
+  /* letter-spacing: 2px; */
+  font-size: 1em;
+}
+.fontTip {
+  font-size: 1em;
+  color: red;
+}
+.textArea {
+  width: 300px;
+}
+.userHelp {
+  min-height: 260px;
+  overflow: auto;
+  word-wrap: break-word;
+  word-break: break-all;
+}
+.imgIcon {
+  vertical-align: middle;
+}
 </style>

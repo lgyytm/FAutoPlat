@@ -7,7 +7,9 @@
                 <a href="https://sadworld.taobao.com/" target="_blank" title="欢迎光临我的淘宝店" slot="left"><img src="../assets/logo.jpg" slot="left"></a>
                 <!-- <mu-icon-button icon='shopping_cart' tooltip="欢迎光临我的淘宝店" href="https://sadworld.taobao.com/" slot="left" /> -->
                 <tools slot="left"></tools>
-                <mu-raised-button slot="right" class="selectGameBtn" label="选择其他游戏" ref="button" labelPosition="before" icon="expand_more" @click.native="toggle" />
+                <mu-raised-button slot="right" class="selectGameBtn" label="选择其他游戏" ref="button" labelPosition="before" @click.native="toggle" >
+                    <embed class="chevronDown" :src="chevronDown"></embed>
+                </mu-raised-button>
                 <mu-popover :trigger="trigger" :open="open" @close="handleClose">
                     <mu-menu :autoWidth="false">
                         <mu-sub-header>自动发货游戏</mu-sub-header>
@@ -84,222 +86,229 @@
 </template>
 
 <script>
-import tools from './common/tools.vue'
-import config from '../common/config.js'
+import tools from "./common/tools.vue";
+import config from "../common/config.js";
+import chevronDown from "Svg/chevron-down2.svg";
 
 export default {
-    name: 'app',
-    data() {
-        return {
-            GetPateConfigUrl: '/pageconfig/get',
-            tutorialActiveStep: 0,
-            open: false,
-            //in this
-            trigger: null,
-            game:'',
-            gameName:'',
-            list : config.selectGameOptions,
-            toastAlert: false,
-            toastMassage: '',
-            footerShow: true,
-            showHelp: false,
-            locale: 'cn',
-            searchTutorialHtml:'',
-            is_step_tutorial: false,
-            step_search_tutorial: []
-            
+  name: "app",
+  data() {
+    return {
+      GetPateConfigUrl: "/pageconfig/get",
+      tutorialActiveStep: 0,
+      open: false,
+      //in this
+      trigger: null,
+      game: "",
+      gameName: "",
+      list: config.selectGameOptions,
+      toastAlert: false,
+      toastMassage: "",
+      footerShow: true,
+      showHelp: false,
+      locale: "cn",
+      searchTutorialHtml: "",
+      is_step_tutorial: false,
+      step_search_tutorial: [],
+      chevronDown
+    };
+  },
+  mounted() {
+    // console.log(this.$route);
+    this.trigger = this.$refs.button.$el;
+    this.game = this.$route.params.game || this.$route.query.game;
+    this.getPageConfig();
+    this.$i18n.locale = this.locale;
+    this.$store.state.locale = this.locale;
+  },
+  watch: {
+    game(val) {
+      switch (val) {
+        case "AG": {
+          this.gameName = "AlternativeGirls";
+          break;
         }
-    },
-    mounted() {
-        // console.log(this.$route);
-        this.trigger = this.$refs.button.$el;
-        this.game = this.$route.params.game || this.$route.query.game;
-        this.getPageConfig();
-        this.$i18n.locale = this.locale;
-        this.$store.state.locale = this.locale;
-    },
-    watch:{
-        game(val){
-            switch (val){
-                case "AG" : {
-                    this.gameName = "AlternativeGirls";
-                    break;
-                }
-                case "ALCH" : {
-                    this.gameName = "为谁炼金";
-                    break;
-                }
-                case "BG" : {
-                    this.gameName = "BanG Dream !";
-                    break;
-                }
-                case "CGSS" : {
-                    this.gameName = "偶像大师灰姑娘女孩";
-                    break;
-                }
-                case "GUP" : {
-                    this.gameName = "少女与战车";
-                    break;
-                }
-                case "MLTD" : {
-                    this.gameName = "偶像大师百万现场";
-                    break;
-                }
-                case "RRMG" : {
-                    this.gameName = "不确定魔法";
-                    break;
-                }
-                case "SAOASIA" : {
-                    this.gameName = "刀剑神域【国际/台】";
-                    break;
-                }
-                case "SAOJP" : {
-                    this.gameName = "刀剑神域【日】";
-                    break;
-                }
-                case "SGXD" : {
-                    this.gameName = "战姬绝唱";
-                    break;
-                }
-                case "SINOALICE" : {
-                    this.gameName = "死亡爱丽丝";
-                    break;
-                }
-                default : {
-                    break;
-                }
-            }
+        case "ALCH": {
+          this.gameName = "为谁炼金";
+          break;
         }
-    },
-    methods: {
-         getPageConfig(){
-            let self = this;
-            this.$axios.get(this.GetPateConfigUrl, {
-                params: {
-                    game: self.game
-                }
-            }).then((res) => {
-                if(res.data.code === "1"){
-                    //获取配置成功
-                    this.is_step_tutorial = res.data.data.is_step_tutorial;//是否启用分步教程
-                    this.step_search_tutorial = res.data.data.step_search_tutorial;
-                    this.searchTutorialHtml = res.data.data.search_tutorial;
-
-                }
-            })
-        },
-        toggle() {
-            this.open = !this.open
-        },
-        // in this
-        handleClose(e) {
-            this.open = false
-        },
-        handleItemClick(){
-            window.location.reload();
-        },
-        handleGoTake(){
-            if(!this.game){
-                this.showToastAlert('还未选择游戏，无法去提货哟~');
-            } else {
-                this.showHelp = false;
-                this.$router.replace('/tbpgames/' + this.game);
-            }
-        },
-        handleBacktoIndex(){
-            this.$router.push('/index?game=' + this.game);
-        },
-        showToastAlert(msg) {
-            this.toastMassage = msg;
-            this.toastAlert = true;
-            if (this.toastTimer) clearTimeout(this.toastTimer);
-            this.toastTimer = setTimeout(() => { this.toastAlert = false; this.toastMassage = '' }, 3000);
-        },
-        hideToastAlert(msg) {
-            this.toastAlert = false;
-            this.toastMassage = '';
-            if (this.toastTimer) clearTimeout(this.toastTimer);
+        case "BG": {
+          this.gameName = "BanG Dream !";
+          break;
         }
-    },
-    components: {
-        tools
+        case "CGSS": {
+          this.gameName = "偶像大师灰姑娘女孩";
+          break;
+        }
+        case "GUP": {
+          this.gameName = "少女与战车";
+          break;
+        }
+        case "MLTD": {
+          this.gameName = "偶像大师百万现场";
+          break;
+        }
+        case "RRMG": {
+          this.gameName = "不确定魔法";
+          break;
+        }
+        case "SAOASIA": {
+          this.gameName = "刀剑神域【国际/台】";
+          break;
+        }
+        case "SAOJP": {
+          this.gameName = "刀剑神域【日】";
+          break;
+        }
+        case "SGXD": {
+          this.gameName = "战姬绝唱";
+          break;
+        }
+        case "SINOALICE": {
+          this.gameName = "死亡爱丽丝";
+          break;
+        }
+        default: {
+          break;
+        }
+      }
     }
-}
+  },
+  methods: {
+    getPageConfig() {
+      let self = this;
+      this.$axios
+        .get(this.GetPateConfigUrl, {
+          params: {
+            game: self.game
+          }
+        })
+        .then(res => {
+          if (res.data.code === "1") {
+            //获取配置成功
+            this.is_step_tutorial = res.data.data.is_step_tutorial; //是否启用分步教程
+            this.step_search_tutorial = res.data.data.step_search_tutorial;
+            this.searchTutorialHtml = res.data.data.search_tutorial;
+          }
+        });
+    },
+    toggle() {
+      this.open = !this.open;
+    },
+    // in this
+    handleClose(e) {
+      this.open = false;
+    },
+    handleItemClick() {
+      window.location.reload();
+    },
+    handleGoTake() {
+      if (!this.game) {
+        this.showToastAlert("还未选择游戏，无法去提货哟~");
+      } else {
+        this.showHelp = false;
+        this.$router.replace("/tbpgames/" + this.game);
+      }
+    },
+    handleBacktoIndex() {
+      this.$router.push("/index?game=" + this.game);
+    },
+    showToastAlert(msg) {
+      this.toastMassage = msg;
+      this.toastAlert = true;
+      if (this.toastTimer) clearTimeout(this.toastTimer);
+      this.toastTimer = setTimeout(() => {
+        this.toastAlert = false;
+        this.toastMassage = "";
+      }, 3000);
+    },
+    hideToastAlert(msg) {
+      this.toastAlert = false;
+      this.toastMassage = "";
+      if (this.toastTimer) clearTimeout(this.toastTimer);
+    }
+  },
+  components: {
+    tools
+  }
+};
 </script>
 
 <style>
 html {
-    margin: 0px;
+  margin: 0px;
 }
 
 h1,
 h2 {
-    font-weight: normal;
-    font-size: 1.5em;
-    line-height: 1.4;
-    padding-bottom: .3em;
-    border-bottom: 1px solid #eee;
+  font-weight: normal;
+  font-size: 1.5em;
+  line-height: 1.4;
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid #eee;
 }
 
 ul {
-    list-style-type: none;
-    padding: 0;
+  list-style-type: none;
+  padding: 0;
 }
 
 li {
-    display: inline-block;
-    margin: 0 10px;
+  display: inline-block;
+  margin: 0 10px;
 }
 
 a {
-    color: #42b983;
+  color: #42b983;
 }
 .logo-img {
-    width: 35px;
-    height: 35px;
-    margin-left: 10px;
+  width: 35px;
+  height: 35px;
+  margin-left: 10px;
 }
 .Title {
-    margin-top: 15px;
-    padding: 10px;
+  margin-top: 15px;
+  padding: 10px;
 }
-.selectGameBtn{
-    width: 224px;
-    font-size: 16px;
+.selectGameBtn {
+  width: 224px;
+  font-size: 16px;
 }
-.fulBtn{
-    padding: 10px;
-    margin-bottom: 10px;
+.fulBtn {
+  padding: 10px;
+  margin-bottom: 10px;
 }
 
 .intro {
-    width: 100%;
+  width: 100%;
 }
 .step-intro {
-    width: 98%;
-    padding: 10px;
+  width: 98%;
+  padding: 10px;
 }
 .center {
-    text-align: center;
+  text-align: center;
 }
 .step-button {
-    margin: 5px;
+  margin: 5px;
 }
 .imageContent {
-    padding: 10px;
+  padding: 10px;
 }
 .image {
-    width: 100%;
+  width: 100%;
 }
 .FootPart {
-
-    min-height: 100px;
-    /* color: #eee;
+  min-height: 100px;
+  /* color: #eee;
     background-color: #333333;
     text-align: center; */
 }
 
 .footContent {
-    padding-top: 20px;
+  padding-top: 20px;
+}
+.chevronDown path {
+  fill: #474a4f;
 }
 </style>

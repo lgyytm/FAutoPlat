@@ -60,13 +60,17 @@
                     <!-- <mu-content-block>以上就是您选择的组合信息，确认无误就把<span class="redAlert">提货码</span><span class="grnAlert">全部复制粘贴</span>到下面的提货码区域吧O∩_∩O</mu-content-block>
                     <mu-content-block> <span class="redAlert">注意是粘贴<span class="grnAlert">全部</span>提货码</span>而不是其他的内容哦，提货码只有购买才能获得，<br> 如还没有提货码请点击输入框下面的图标文字购买吧</mu-content-block>
                     <mu-paper :zDepth="2" class="specialAlert" v-html="takeTutorialHtml"></mu-paper> -->
-                    <mu-text-field class="textArea" :errorText="errorText" hintText="提货码区域" v-model="deliveryCode" multiLine :rows="2" icon="vpn_key"></mu-text-field>
+                    <mu-text-field class="textArea" :errorText="errorText" hintText="提货码区域" v-model="deliveryCode" multiLine :rows="2">
+                        <img :src="keyIcon" />
+                    </mu-text-field>
                     <!-- <Button class="button" type="error" @click="submit">确定提货</Button> -->
                     <!-- <Button class="button" type="ghost" @click="reset">清空提货码</Button> -->
                     <mu-raised-button class="button" label="确定提货"  @click.native="submit" secondary></mu-raised-button>
                     <mu-raised-button class="button clearBtn" label="清空提货码" @click.native="reset" primary ></mu-raised-button>
                     <mu-content-block>
-                        <mu-icon-button class="shop-button" icon='shopping_cart' tooltip="点我购买提货码" :href="shop_url" target="blank" @click.native="closeCfmDialog" />
+                        <mu-icon-button class="shop-button" tooltip="点我购买提货码" :href="shop_url" target="blank" @click.native="closeCfmDialog" >
+                            <img :src="cart" />
+                        </mu-icon-button>
                         <a class="shop-button" :href="shop_url" target="_blank">点我进入提货码购买页面</a>
                     </mu-content-block>
                 </mu-paper>
@@ -150,7 +154,9 @@
                 </div>
                 <mu-content-block v-if="errResponseData.detail !== 'takeErr'">
                     如果您确认提货码无误，则有可能是您已使用过提货码，通过以下入口可以查询历史提货记录哦
-                    <mu-flat-button label="查询提货记录" icon="search" primary @click.native="handleSearchHistory"/>
+                    <mu-flat-button label="查询提货记录" primary @click.native="handleSearchHistory"/>
+                        <img :src="magnify">
+                    </mu-flat-button>
                 </mu-content-block>
                 <mu-raised-button label="我再看看" slot="actions" primary @click.native="closeErrDialog"></mu-raised-button>
             </mu-dialog>
@@ -164,6 +170,9 @@
 <script>
 import bus from '../../common/bus';
 import Button from 'iview/src/components/button';
+import cart from 'Svg/cart.svg';
+import keyIcon from 'Svg/key.svg';
+import magnify from 'Svg/magnify.svg';
 
     export default{
         data(){
@@ -189,7 +198,10 @@ import Button from 'iview/src/components/button';
                 giftArr:[],
                 giftCountIgnore: 0,
                 takeTutorialHtml:'',
-                takeAlertHtml:''
+                takeAlertHtml:'',
+                cart,
+                keyIcon,
+                magnify,
             }
         },
         props: {

@@ -18,7 +18,6 @@ import Message from 'iview/src/components/message';
 Vue.use(MuseUI);
 
 
-
 axios.defaults.baseURL = config.backUrl;
 axios.defaults.withCredentials = true;
 Vue.prototype.$axios = axios;
