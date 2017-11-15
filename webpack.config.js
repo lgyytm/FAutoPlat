@@ -56,8 +56,6 @@ module.exports = {
   resolve: {
     alias: {
       'vue$': 'vue/dist/vue.esm.js',
-      'Svg': path.resolve(__dirname, './static/img/svg'),
-      'muse-components': 'muse-ui/src',
     }
   },
   devServer: {
