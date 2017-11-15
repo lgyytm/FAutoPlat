@@ -99,8 +99,6 @@
 <script>
 import bus from "../../common/bus";
 import Clipboard from "clipboard";
-import Fan from "Svg/fan.svg";
-import magnify from "Svg/magnify2.svg";
 
 export default {
   data() {
@@ -118,8 +116,6 @@ export default {
       SSCStatus: 0, //查询历史信息状态，0为待查询，1为已查询
       soldCompInfo: {},
       searchBtnDisabled: false, //查询按钮是否禁用
-      fan: Fan,
-      magnify
     };
   },
   created() {

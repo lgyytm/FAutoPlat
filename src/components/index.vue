@@ -8,7 +8,7 @@
                 <!-- <mu-icon-button icon='shopping_cart' tooltip="欢迎光临我的淘宝店" href="https://sadworld.taobao.com/" slot="left" /> -->
                 <tools slot="right"></tools>
                 <mu-raised-button slot="right" class="selectGameBtn" label="选择其他游戏" ref="button" labelPosition="before" @click.native="toggle" >
-                    <embed class="chevronDown" :src="chevronDown"></embed>
+                    <icon name="chevron-down" class="chevronDown" :w="24" :h="24"></icon>
                 </mu-raised-button>
                 <mu-popover :trigger="trigger" :open="open" @close="handleClose">
                     <mu-menu :autoWidth="false">
@@ -88,7 +88,6 @@
 <script>
 import tools from "./common/tools.vue";
 import config from "../common/config.js";
-import chevronDown from "Svg/chevron-down2.svg";
 
 export default {
   name: "app",
@@ -110,7 +109,6 @@ export default {
       searchTutorialHtml: "",
       is_step_tutorial: false,
       step_search_tutorial: [],
-      chevronDown
     };
   },
   mounted() {

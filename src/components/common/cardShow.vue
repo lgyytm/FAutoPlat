@@ -276,10 +276,6 @@ import InputNumber from 'iview/src/components/input-number';
 import Poptip from 'iview/src/components/poptip';
 import Spin from 'iview/src/components/spin';
 import Collapse from 'iview/src/components/collapse';
-import magnify from 'Svg/magnify.svg';
-import replay from 'Svg/replay.svg';
-import chevronDown from 'Svg/chevron-down.svg';
-import chevronUp from 'Svg/chevron-up.svg';
 
 const Panel = Collapse.Panel;
 
@@ -372,12 +368,7 @@ export default {
             finishGetData: '',
             finishGetFirstChoiceGroup: '',
             finishGetRateIgnore: '',
-            finishGetNoticeCollapse:'',
-            replay,
-            magnify,
-            chevronDown,
-            chevronUp
-            
+            finishGetNoticeCollapse:'',            
         }
     },
     components:{
