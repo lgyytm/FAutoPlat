@@ -60,8 +60,9 @@
                     <!-- <mu-content-block>以上就是您选择的组合信息，确认无误就把<span class="redAlert">提货码</span><span class="grnAlert">全部复制粘贴</span>到下面的提货码区域吧O∩_∩O</mu-content-block>
                     <mu-content-block> <span class="redAlert">注意是粘贴<span class="grnAlert">全部</span>提货码</span>而不是其他的内容哦，提货码只有购买才能获得，<br> 如还没有提货码请点击输入框下面的图标文字购买吧</mu-content-block>
                     <mu-paper :zDepth="2" class="specialAlert" v-html="takeTutorialHtml"></mu-paper> -->
+                    <icon name="key" class="keyIcon" :w="24" :h="24"></icon>
                     <mu-text-field class="textArea" :errorText="errorText" hintText="提货码区域" v-model="deliveryCode" multiLine :rows="2">
-                        <icon name="key" :w="24" :h="24"></icon>
+                        
                     </mu-text-field>
                     <!-- <Button class="button" type="error" @click="submit">确定提货</Button> -->
                     <!-- <Button class="button" type="ghost" @click="reset">清空提货码</Button> -->
@@ -432,9 +433,11 @@ import Button from 'iview/src/components/button';
         margin:2px;
     }
     .textArea{
-        width:99% !important;
+        display: inline-block;
+        width:90% !important;
         margin-top: 10px;
         margin-bottom: -10px;
+        padding: 5px;
         border: 1px dashed #e0e0e0;
     }
     .shop-button{
@@ -517,4 +520,9 @@ import Button from 'iview/src/components/button';
         background-color: #ffccbc;
     }
 
+    .keyIcon{
+        vertical-align: top;
+        margin-top: 20px;
+        margin-left: 30px;
+    }
 </style>

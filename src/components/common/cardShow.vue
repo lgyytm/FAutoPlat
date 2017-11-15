@@ -45,8 +45,8 @@
                     <div v-for="gift in giftArr" :key="gift.giftField">
                         <span>{{ $t('gifttotallabel') }}：{{gift.giftName}}</span>
 
-                        <mu-switch :label="$t('filterenabled')" v-model="giftquery[gift.giftField].enable" @change="handleGiftRangeEnableToggle(giftquery[gift.giftField].enable, gift)" class="filter-switch" />
-                        <span v-if="showGiftRange" class="rate-select">
+                        <mu-switch :label="$t('filterenabled')" v-model="giftquery[gift.giftField].enable" @change="handleGiftRangeEnableToggle(gift.giftField)" class="filter-switch" />
+                        <span v-if="giftquery[gift.giftField].enable" class="rate-select">
                             <InputNumber size="small" :min="0" :max="99999" v-model.number="giftquery[gift.giftField].min"></InputNumber> ~
                             <InputNumber size="small" :min="0" :max="99999" v-model.number="giftquery[gift.giftField].max"></InputNumber>
                         </span>
@@ -84,7 +84,7 @@
                         <!-- <mu-select-field v-model="rateName" label="请选择稀有度名称" class="rate-select">
                                 <mu-menu-item :value="rate" :title="rate" />
                             </mu-select-field> -->
-                        <mu-switch :label="$t('filterenabled')" v-model="ratequery[rate.rateField].enable" @change="handleRateRangeEnableToggle(rate.rateField,ratequery[rate.rateField].enable)" class="filter-switch" />
+                        <mu-switch :label="$t('filterenabled')" v-model="ratequery[rate.rateField].enable" @change="handleRateRangeEnableToggle(rate.rateField)" class="filter-switch" />
                         <span v-if="ratequery[rate.rateField].enable" class="rate-select">
                             <InputNumber size="small" :min="1" :max="99999" v-model.number="ratequery[rate.rateField].min"></InputNumber> ~
                             <InputNumber size="small" :min="1" :max="99999" v-model.number="ratequery[rate.rateField].max"></InputNumber>
@@ -864,33 +864,19 @@ export default {
             // this.userChoiceName = [];
             // this.userChoiceObj = [];
         },
-        handleRateRangeEnableToggle(rateField,enable){
-            // this.showRateRange[rate.rateField] = enable;
+        handleRateRangeEnableToggle(rateField){
+            let enable = this.ratequery[rateField].enable;
             let ratequery = Object.assign({}, this.ratequery) ;
             let $rateField = ratequery[rateField]
             $rateField.enable = !enable;
             this.$set(this,'ratequery',ratequery);
-            this.showRateRange = !enable;
-            // this.ratequery[rateField] = Object.assign({}, this.ratequery[rateField], rateField)
-            // for (let rate in this.ratequery) {
-            //     if (this.ratequery[rate.rateField].enable == true) {
-            //         this.showRateRange[rate.rateField] = true;
-            //         return;
-            //     } else {
-            //         this.showRateRange[rate.rateField] = false;
-            //     }
-            // }
         },
-        handleGiftRangeEnableToggle(enable, gift){
-            // 
-            for (let gift in this.giftquery) {
-                if (this.giftquery[gift].enable == true) {
-                    this.showGiftRange = true;
-                    return;
-                } else {
-                    this.showGiftRange = false;
-                }
-            }
+        handleGiftRangeEnableToggle(giftField){
+            let enable = this.giftquery[giftField].enable;
+            let giftquery = Object.assign({}, this.giftquery) ;
+            let $giftField = giftquery[giftField]
+            $giftField.enable = !enable;
+            this.$set(this,'giftquery',giftquery);
         },
         handlePreset(presetFilter) {
             this.showSearchFilter = true;
