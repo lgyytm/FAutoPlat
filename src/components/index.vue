@@ -6,7 +6,7 @@
                 <!--  -->
                 <a href="https://sadworld.taobao.com/" target="_blank" title="欢迎光临我的淘宝店" slot="left"><img src="../assets/logo.jpg" slot="left"></a>
                 <!-- <mu-icon-button icon='shopping_cart' tooltip="欢迎光临我的淘宝店" href="https://sadworld.taobao.com/" slot="left" /> -->
-                <tools slot="left"></tools>
+                <tools slot="right"></tools>
                 <mu-raised-button slot="right" class="selectGameBtn" label="选择其他游戏" ref="button" labelPosition="before" @click.native="toggle" >
                     <embed class="chevronDown" :src="chevronDown"></embed>
                 </mu-raised-button>

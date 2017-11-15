@@ -21,6 +21,7 @@ module.exports = {
         loader: 'vue-loader',
         options: {
           loaders: {
+            less: 'vue-style-loader!css-loader!less-loader',
             // i18n: '@kazupon/vue-i18n-loader'
           }
           // other vue-loader options go here
@@ -36,7 +37,7 @@ module.exports = {
         exclude: /node_modules/
       },
       {
-        test: /\.css$/,
+        test: /\.(css)$/,
         loader: "style-loader!css-loader"
       },
       {
@@ -56,6 +57,7 @@ module.exports = {
     alias: {
       'vue$': 'vue/dist/vue.esm.js',
       'Svg': path.resolve(__dirname, './static/img/svg'),
+      'muse-components': 'muse-ui/src',
     }
   },
   devServer: {

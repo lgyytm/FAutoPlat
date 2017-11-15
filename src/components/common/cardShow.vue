@@ -21,7 +21,13 @@
                             <div class="checkboxLayerContainer">
                                 <div class="checkboxLayer" @click="clickUnitCard(card)"></div>
                                 <span v-if="everyCardCountFilter">点击选择卡牌数量</span>
-                                <mu-checkbox v-if="!everyCardCountFilter" label="GET" class="cusCheckBox" :nativeValue="card.name" @change="changeChoiceObj(card)" v-model="userChoiceName" uncheckIcon="favorite_border" checkedIcon="favorite"></mu-checkbox>
+                                <!-- <div v-if="!everyCardCountFilter" label="GET" class="cusCheckBox" :nativeValue="card.name" @change="changeChoiceObj(card)">
+                                    <input type="checkbox" v-model="userChoiceName" />
+                                    <icon name="heart" class="checked" :w="24" :h="24"></icon>
+                                    <icon name="heart-outline" class="unchecked" :w="24" :h="24"></icon>
+                                </div> -->
+                                <checkbox v-if="!everyCardCountFilter" label="GET" class="cusCheckBox" uncheckIcon="heart-outline" checkedIcon="heart" v-model="userChoiceName" :nativeValue="card.name" @change="changeChoiceObj(card)"/>
+                                <!-- <mu-checkbox v-if="!everyCardCountFilter" label="GET" class="cusCheckBox" :nativeValue="card.name" @change="changeChoiceObj(card)" v-model="userChoiceName" uncheckIcon="favorite_border" checkedIcon="favorite"></mu-checkbox> -->
                             </div>
                         </mu-paper>
                     </Panel>
@@ -78,8 +84,8 @@
                         <!-- <mu-select-field v-model="rateName" label="请选择稀有度名称" class="rate-select">
                                 <mu-menu-item :value="rate" :title="rate" />
                             </mu-select-field> -->
-                        <mu-switch :label="$t('filterenabled')" v-model="ratequery[rate.rateField].enable" @change="handleRateRangeEnableToggle(ratequery[rate.rateField].enable, rate)" class="filter-switch" />
-                        <span v-if="showRateRange" class="rate-select">
+                        <mu-switch :label="$t('filterenabled')" v-model="ratequery[rate.rateField].enable" @change="handleRateRangeEnableToggle(rate.rateField,ratequery[rate.rateField].enable)" class="filter-switch" />
+                        <span v-if="ratequery[rate.rateField].enable" class="rate-select">
                             <InputNumber size="small" :min="1" :max="99999" v-model.number="ratequery[rate.rateField].min"></InputNumber> ~
                             <InputNumber size="small" :min="1" :max="99999" v-model.number="ratequery[rate.rateField].max"></InputNumber>
                         </span>
@@ -121,10 +127,10 @@
         <!-- </transition> -->
         <div class="searchFilterControlArea">
             <mu-flat-button v-show="showSearchFilter" :label="$t('collapselabel')" class="demo-flat-button" @click="showSearchFilter = !showSearchFilter" secondary>
-                <img :src="chevronUp" />
+                <icon name="chevron-up" :w="24" :h="24"></icon>
             </mu-flat-button>
             <mu-flat-button v-show="!showSearchFilter" :label="$t('expandlabel')" class="demo-flat-button" @click="showSearchFilter = !showSearchFilter" secondary>
-                <img :src="chevronDown" />
+                <icon name="chevron-down" :w="24" :h="24"></icon>
             </mu-flat-button>
         </div>
         
@@ -178,7 +184,8 @@
                     <div class="checkboxLayerContainer">
                         <div class="checkboxLayer" @click="clickUnitCard(card)"></div>
                         <span v-if="everyCardCountFilter">{{$t('clicktoselectcardcountlabel')}}</span>
-                        <mu-checkbox v-if="!everyCardCountFilter" label="GET" class="cusCheckBox" :nativeValue="card.name" @change="changeChoiceObj(card)" v-model="userChoiceName" uncheckIcon="favorite_border" checkedIcon="favorite"></mu-checkbox>
+                        <checkbox v-if="!everyCardCountFilter" label="GET" class="cusCheckBox" uncheckIcon="heart-outline" checkedIcon="heart" v-model="userChoiceName" :nativeValue="card.name" @change="changeChoiceObj(card)"/>
+                        <!-- <mu-checkbox v-if="!everyCardCountFilter" label="GET" class="cusCheckBox" :nativeValue="card.name" @change="changeChoiceObj(card)" v-model="userChoiceName" uncheckIcon="favorite_border" checkedIcon="favorite"></mu-checkbox> -->
                     </div>
 
                 </mu-paper>
@@ -195,7 +202,8 @@
                 <div class="checkboxLayerContainer">
                         <div class="checkboxLayer" @click="clickUnitCard(card)"></div>
                         <span v-if="everyCardCountFilter">{{$t('clicktoselectcardcountlabel')}}</span>
-                        <mu-checkbox v-if="!everyCardCountFilter" label="GET" class="cusCheckBox" :nativeValue="card.name" @change="changeChoiceObj(card)" v-model="userChoiceName" uncheckIcon="favorite_border" checkedIcon="favorite"></mu-checkbox>
+                        <checkbox v-if="!everyCardCountFilter" label="GET" class="cusCheckBox" uncheckIcon="heart-outline" checkedIcon="heart" v-model="userChoiceName" :nativeValue="card.name" @change="changeChoiceObj(card)"/>
+                        <!-- <mu-checkbox v-if="!everyCardCountFilter" label="GET" class="cusCheckBox" :nativeValue="card.name" @change="changeChoiceObj(card)" v-model="userChoiceName" uncheckIcon="favorite_border" checkedIcon="favorite"></mu-checkbox> -->
                     </div>
             </mu-paper>
     
@@ -237,10 +245,10 @@
         </div>
         <div class="submitFind">
             <mu-raised-button class="submitButton" :label="$t('searchbtn')" labelPosition="before" secondary @click.native="handleSearch(null)" :disabled="disabledButton">
-                <img :src="magnify">
+                <icon name="magnify" :w="24" :h="24"></icon>
             </mu-raised-button>
             <mu-raised-button class="submitButton" :label="$t('resetbtn')" labelPosition="before" primary @click.native="reset">
-                <img :src="replay">
+                <icon name="replay" :w="24" :h="24"></icon>
             </mu-raised-button>
         </div>
         <div v-if="showAlert">
@@ -263,6 +271,7 @@
 
 <script>
 import bus from '../../common/bus';
+import checkbox from '../smallcomps/checkbox.vue';
 import InputNumber from 'iview/src/components/input-number';
 import Poptip from 'iview/src/components/poptip';
 import Spin from 'iview/src/components/spin';
@@ -376,7 +385,8 @@ export default {
         Poptip,
         Spin,
         Collapse,
-        Panel
+        Panel,
+        checkbox,
     },
     props: {
         game: {
@@ -863,16 +873,22 @@ export default {
             // this.userChoiceName = [];
             // this.userChoiceObj = [];
         },
-        handleRateRangeEnableToggle(enable, rate){
+        handleRateRangeEnableToggle(rateField,enable){
             // this.showRateRange[rate.rateField] = enable;
-            for (let rate in this.ratequery) {
-                if (this.ratequery[rate].enable == true) {
-                    this.showRateRange = true;
-                    return;
-                } else {
-                    this.showRateRange = false;
-                }
-            }
+            let ratequery = Object.assign({}, this.ratequery) ;
+            let $rateField = ratequery[rateField]
+            $rateField.enable = !enable;
+            this.$set(this,'ratequery',ratequery);
+            this.showRateRange = !enable;
+            // this.ratequery[rateField] = Object.assign({}, this.ratequery[rateField], rateField)
+            // for (let rate in this.ratequery) {
+            //     if (this.ratequery[rate.rateField].enable == true) {
+            //         this.showRateRange[rate.rateField] = true;
+            //         return;
+            //     } else {
+            //         this.showRateRange[rate.rateField] = false;
+            //     }
+            // }
         },
         handleGiftRangeEnableToggle(enable, gift){
             // 

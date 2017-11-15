@@ -14,6 +14,8 @@ import config from './common/config';
 import 'iview/dist/styles/iview.css';
 import Message from 'iview/src/components/message';
 
+import Icon from 'vue2-svg-icon/Icon.vue';
+Vue.component('icon', Icon); 
 
 Vue.use(MuseUI);
 

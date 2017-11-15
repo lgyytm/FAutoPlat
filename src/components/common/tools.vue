@@ -1,9 +1,10 @@
 ﻿<template>
     <div>
-        
-        <mu-icon-button tooltip="附加功能" @click.native="openBottomSheet">
-            <img :src="fan" />
-        </mu-icon-button>
+        <div class="demo-flat-button-container">
+          <mu-flat-button label="更多功能" @click.native="openBottomSheet">
+              <icon   name="fan" :w="24" :h="24"></icon>
+          </mu-flat-button>
+        </div>
         <mu-bottom-sheet :open="bottomSheet" @close="closeBottomSheet">
             <mu-list @itemClick="closeBottomSheet">
                 <mu-sub-header>
@@ -19,7 +20,7 @@
         <mu-dialog :open="searchSoldCompDialog" title="查询历史提货信息" >
             <mu-paper :zDepth="1" class="SSCDialogContent" v-if="SSCStatus===0">
                 <mu-content-block class="alertContent">请输入一条您使用过的提货码，然后点击查询</mu-content-block>
-                <img class="imgIcon" :src="magnify">
+                <icon class="imgIcon" name="magnify" :w="24" :h="24"></icon>
                 <mu-text-field class="textArea" :errorText="errorText" label="提货码" labelFloat v-model="deliveryCode"></mu-text-field>
             </mu-paper>
             <mu-paper :zDepth="1" v-if="SSCStatus===1">
@@ -83,7 +84,7 @@
         <mu-dialog :open="searchCompByIdDialog" title="根据ID查询账号" >
             <mu-paper :zDepth="1" class="SSCDialogContent">
                 <mu-content-block class="alertContent">请输入ID，然后点击查询</mu-content-block>
-                <img class="imgIcon" :src="magnify">
+                  <icon class="imgIcon" name="magnify" :w="24" :h="24"></icon>
                <mu-text-field class="textArea" :errorText="errorTextinSearchId" label="账号ID" labelFloat v-model.trim="compId">
                 </mu-text-field>
             </mu-paper>
